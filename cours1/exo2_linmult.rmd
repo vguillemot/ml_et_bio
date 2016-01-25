@@ -1,0 +1,66 @@
+---
+title: "Régression linéaire multiple : comparaison de l'algorithme de descente de gradient avec un algorithme plus direct"
+author: "Vincent Guillemot"
+output: pdf_document
+header-includes: \usepackage{nicefrac}
+---
+
+La régression linéaire multiple permet de construire un modèle (linéaire) entre
+plusieurs variables explicatives (la matrice $X$) et une variable à expliquer
+(le vecteur $y$). La méthode permet l'estimation d'un vecteur de poids $\beta^*$
+tel que
+
+\[
+  \beta^* = \arg \min_{\beta \in \mathbb R^p} \|y - X\beta\|_2^2
+\]
+
+> *Remarque : dans tout l'exercice, nous considérons que toutes les variables sont centrées. Il n'y a donc pas besoin d'introduire d'intercept dans le modèle.*
+
+# Solution analytique
+
+ 1. Utilisez les notions de calcul matriciel présentées plus tôt pour calculer 
+ $\beta^*$.
+
+Il est bien sûr très facile, à l'aide d'un logiciel comme R, d'utiliser des
+fonctions déjà implémentées pour calculer la solution de manière directe.
+
+Le but de l'exercice est plutôt de comparer deux algorithmes itératifs qui sont
+composés tous les deux d'opérations matricielles simples : 
+
+ * le premier est basé sur le calcul d'une inverse,
+ * le deuxième sera l'algorithme du gradient.
+
+# Solution directe
+
+L'algorithme de Newton-Schulz (aussi appelé Hotelling-Bodewig) est un algorithme 
+itératif qui permet de calculer l'inverse d'une matrice carrée $A$ 
+($p \times p$). Sa formulation est la suivante :
+\[
+  V_{k+1} = V_k (2 I - A V_k), \text{~} k = 0, 1, 2,\dots
+\]
+Avec la matrice $V_0$ qui est telle que toutes les valeurs propres de $I - AV_0$ 
+sont inférieures à 1. Par exemple, si $\lambda$ est la valeur propre maximale
+de $A$, alors $V_0 = \frac{1}{\lambda^2} A$ devrait permettre à l'algorithme
+de converger.
+
+Cet algorithme peut donc être utilisé dès que l'on connait la valeur de 
+$\lambda$. Or nous nous trouvons dans un cas particulier très intéressant :
+la matrice à inverser est une matrice définie positive. Cela nous permet 
+d'utiliser l'algorithme de la puissance itérée. Sa formulation est la suivante :
+\[
+  u_{k+1} = \frac{1}{\|A u_k\|_2} A u_k, \text{~} k = 0, 1, 2,\dots
+\]
+Avec $u_0$ qui peut être un vecteur quelconque (alétoire par exemple).
+A convergence, la valeur de $\lambda$ est approximée par 
+$u_{\infty}^\top A u_{\infty}$.
+
+
+ 2. Implémentez l'algorithme de la puissance itérée pour calculer $\lambda$.
+ 3. Implémentez l'algorithme de Newton-Shulz pour calculer $A^{-1}$.
+
+
+# La méthode du gradient
+
+ 4. Implémentez la méthode du gradient pour trouver la solution du problème 
+ d'optimisation.
+ 5. Comparez avec la méthode *directe*.
